@@ -12,6 +12,9 @@ import java.util.List;
 
 @Controller
 public class IndexController {
+  /** Debugging Existing Java Apps:
+   * 3-2: this is the constant resulting from Refactor>Extract>Constant*/
+  public static final int AMOUNT_TO_SHOW = 3;
   private FlashCardService flashCardService;
 
   @Autowired
@@ -19,10 +22,15 @@ public class IndexController {
     this.flashCardService = flashCardService;
   }
 
+  /** Debugging Existing Java Apps:
+   * 3-1: we need to change this to three but we're making it a constant!;
+   * */
   @RequestMapping("/")
   public String index(Model model) {
+
     StringBuilder ctaBuilder = new StringBuilder();
-    List<FlashCard> cards = flashCardService.getRandomFlashCards(5);
+       //3-1:
+    List<FlashCard> cards = flashCardService.getRandomFlashCards(AMOUNT_TO_SHOW);
     ctaBuilder.append("Refresh your memory about ");
     for (FlashCard card : cards) {
       ctaBuilder.append(card.getTerm());
