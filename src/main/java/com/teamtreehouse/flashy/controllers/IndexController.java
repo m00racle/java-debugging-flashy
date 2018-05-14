@@ -38,7 +38,7 @@ public class IndexController {
         ctaBuilder.append(", ");
       }
     }
-    ctaBuilder.append(" and ");
+
     Long totalCount = flashCardService.getCurrentCount();
     if(totalCount>AMOUNT_TO_SHOW){
       //3-3:this is the code that count how many left are the flash card showed:
@@ -47,7 +47,7 @@ public class IndexController {
 
       //*there are no such validation regrading what if the totalCount is bigger than AMOUNT_TO_SHOW
       //WE NEED TO FIX THIS:
-
+      ctaBuilder.append(" and ");
       ctaBuilder.append(totalCount - AMOUNT_TO_SHOW);
       ctaBuilder.append(" more");
     }
