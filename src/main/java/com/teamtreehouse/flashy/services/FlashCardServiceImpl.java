@@ -6,11 +6,14 @@ import com.teamtreehouse.flashy.repositories.FlashCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
@@ -52,24 +55,24 @@ public class FlashCardServiceImpl implements FlashCardService {
   @Override
   public FlashCard getNextFlashCardBasedOnViews(Map<Long, Long> idToViewCounts) {
     FlashCard card = getNextUnseenFlashCard(idToViewCounts.keySet());
-    if (card != null) {
-      return card;
+    if (card == null) {
+      //this is where you need to put breakpoint to evaluate the code expression
+      card = getLeastViewedFlashCard(idToViewCounts);
     }
-    Long leastViewedId = null;
-    for (Map.Entry<Long, Long> entry : idToViewCounts.entrySet()) {
-      if (leastViewedId == null) {
-        leastViewedId = entry.getKey();
-        continue;
-      }
-      Long lowestScore = idToViewCounts.get(leastViewedId);
-      if (entry.getValue() < lowestScore) {
-        //it should check all lowest score for all ids before jumping into conclusion and break
-        //thus we need new model to get all of the views and check the opposite
-        leastViewedId = entry.getKey();
-      }
+    return card;
+  }
 
-    }
-    return flashCardRepository.findOne(leastViewedId);
+  private FlashCard getLeastViewedFlashCard(Map<Long, Long> idToViewCounts) {
+    Long leastViewedId = null;
+    List<Map.Entry<Long, Long>> entries = new ArrayList<>(idToViewCounts.entrySet());
+    //<--we cannot shuffle Set thus we change above set to List
+    Collections.shuffle(entries);
+    //this is a stream usage
+    return entries.stream()
+        .min(Comparator.comparing(Map.Entry::getValue))
+        .map(entry -> flashCardRepository.findOne(entry.getKey()))
+        .orElseThrow(IllegalArgumentException::new);
+
   }
 
   @Override
