@@ -29,7 +29,7 @@ public class IndexController {
   public String index(Model model) {
 
     StringBuilder ctaBuilder = new StringBuilder();
-       //3-1:
+       //3-1: this need to make int refactor>extract>constant:
     List<FlashCard> cards = flashCardService.getRandomFlashCards(AMOUNT_TO_SHOW);
     ctaBuilder.append("Refresh your memory about ");
     for (FlashCard card : cards) {
@@ -40,8 +40,18 @@ public class IndexController {
     }
     ctaBuilder.append(" and ");
     Long totalCount = flashCardService.getCurrentCount();
-    ctaBuilder.append(totalCount);
-    ctaBuilder.append(" more");
+    if(totalCount>AMOUNT_TO_SHOW){
+      //3-3:this is the code that count how many left are the flash card showed:
+
+      //*it needs to be fixed by make the count answer after substracting with the number amount_to_show
+
+      //*there are no such validation regrading what if the totalCount is bigger than AMOUNT_TO_SHOW
+      //WE NEED TO FIX THIS:
+
+      ctaBuilder.append(totalCount - AMOUNT_TO_SHOW);
+      ctaBuilder.append(" more");
+    }
+
     model.addAttribute("cta", ctaBuilder.toString());
     model.addAttribute("flashCardCount", totalCount);
     return "index";
